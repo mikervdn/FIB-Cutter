@@ -1,7 +1,7 @@
 from PIL import Image
 import numpy as np
 import os
-import math
+
 
 ######
 #Author:  Mike van der Naald
@@ -21,7 +21,7 @@ def addTo(xyCoordinates,imageDimensions,dwelltime,blankOrNotBottom,blankOrNotTop
         xCoordinate=xyCoordinates[:,0]
         yCoordinate=xyCoordinates[:,1]
         #Then lets find how many points there are
-        numCoordinate=xyCoordinates[0].size
+        #numCoordinate=xyCoordinates[0].size
         #This will hold the y-coordinates
         
         
@@ -39,10 +39,12 @@ def addTo(xyCoordinates,imageDimensions,dwelltime,blankOrNotBottom,blankOrNotTop
         #Let's find the dwelltimes column and formate it as well.
         dwellTimes=dwelltime*np.ones(len(xCoordinate))
         dwellTimes.dot(dwellTimes.transpose())
-        dwellTimes.shape = (numCoordinate,1)
+        
+       #numCoordinate=dwellTimes.shape[0]
+
 
         #Now let's concantenate the arrays before printing
-        array=np.hstack((dwellTimes,xCoordinate,yCoordinate))
+        array=np.transpose(np.vstack((dwellTimes,xCoordinate,yCoordinate)))
         #Now we open the file such that we can append a numpy array.
 
 
@@ -54,8 +56,7 @@ def addTo(xyCoordinates,imageDimensions,dwelltime,blankOrNotBottom,blankOrNotTop
         #insert a blank at the end of the array using blankOrNotBottom
 
         if blankOrNotBottom==1 and blankOrNotTop==1:
-            numStuff=array.shape
-            numRows=numStuff[0]
+            numRows=array.shape[0]
             topRow=array[0,:]
             bottomRow=array[numRows-1,:]
             middleRows=array[1:numRows-1,:]
@@ -70,8 +71,7 @@ def addTo(xyCoordinates,imageDimensions,dwelltime,blankOrNotBottom,blankOrNotTop
         
    
         if blankOrNotBottom==1 and blankOrNotTop!=1:
-            numStuff=array.shape
-            numRows=numStuff[0]
+            numRows=array.shape[0]
             main=array[0:numRows-1,:]
             endRow=array[numRows-1,:]  
         #blank the endRow
@@ -81,8 +81,7 @@ def addTo(xyCoordinates,imageDimensions,dwelltime,blankOrNotBottom,blankOrNotTop
 
 
         if blankOrNotTop==1 and blankOrNotBottom!=1:
-            numStuff=array.shape
-            numRows=numStuff[0]
+            numRows=array.shape[0]
             main=array[1:,:]
             topRow=array[0,:]
             newTopRow=np.append(topRow,[1])
@@ -126,7 +125,7 @@ def streamFileGenerator(imageFilePath):
 
     #Now that we have a list of all black cuts let's delete
     #The first row it is garbage.
-    blackPixels = np.delete(blackPixels, (0), axis=0)
+    return blackPixels 
     
     
     
